@@ -1,1 +1,21 @@
 rootProject.name = 'spring-multi-module'
+
+include '_migrate'
+
+include 'api-main'
+include 'api-manager'
+
+include 'domain-main'
+include 'domain-manager'
+include 'domain-quote'
+include 'domain-redis'
+
+include 'module-common'
+
+//include 'external-aws-s3'
+//project(':external-aws-s3').projectDir = file('externals/aws-s3')
+
+include 'external-common-security'
+project(':external-common-security').projectDir = file('externals/common-security')
+
+include 'test-helper'
