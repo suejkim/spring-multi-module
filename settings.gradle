@@ -1,21 +1,40 @@
 rootProject.name = 'spring-multi-module'
 
-include '_migrate'
+["api-main", "api-admin"].each {
 
-include 'api-main'
-include 'api-manager'
+    def compDir = new File(rootDir, it)
+    if(!compDir.exists()){
+        compDir.mkdirs()
+    }
 
-include 'domain-main'
-include 'domain-manager'
-include 'domain-quote'
-include 'domain-redis'
+    compDir.eachDir {subDir ->
 
-include 'module-common'
+        def gradleFile = new File(subDir.absolutePath, "build.gradle")
+        if(!gradleFile.exists()){
+            gradleFile.text =
+                    """
 
-//include 'external-aws-s3'
-//project(':external-aws-s3').projectDir = file('externals/aws-s3')
+                    dependencies {
 
-include 'external-common-security'
-project(':external-common-security').projectDir = file('externals/common-security')
+                    }
 
-include 'test-helper'
+                    """.stripIndent(20)
+        }
+
+        [
+                "src/main/java/com/sjkim",
+                "src/main/resources",
+                "src/test/java/com/sjkim",
+                "src/test/resources"
+        ].each {srcDir->
+            def srcFolder = new File(subDir.absolutePath, srcDir)
+            if(!srcFolder.exists()){
+                srcFolder.mkdirs()
+            }
+        }
+
+        def projectName = ":${it}-${subDir.name}";
+        include projectName
+        project(projectName).projectDir = subDir
+    }
+}
