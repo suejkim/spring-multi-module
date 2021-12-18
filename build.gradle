@@ -1,30 +1,92 @@
-plugins {
-    id 'org.springframework.boot' version '2.6.1'
-    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-    id 'java'
-}
+buildscript {
+    ext {
+        springVersion = '2.6.1'
+        boot = 'org.springframework.boot'
+        lombok = 'org.projectlombok:lombok'
+    }
 
-group = 'com.sjkim'
-version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
 
-configurations {
-    compileOnly {
-        extendsFrom annotationProcessor
+    dependencies {
+        classpath("$boot:spring-boot-gradle-plugin:$springVersion")
     }
 }
 
-repositories {
-    mavenCentral()
+allprojects {
+    group = "com.sjkim"
+    version = "1.0.0"
 }
 
-dependencies {
-    implementation 'org.springframework.boot:spring-boot-starter'
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
-}
 
-test {
-    useJUnitPlatform()
+subprojects {
+
+    apply plugin: 'java'
+    apply plugin: boot
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'idea'
+
+    sourceCompatibility = JavaVersion.VERSION_15
+    targetCompatibility = JavaVersion.VERSION_15
+
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+
+    configurations {
+        developmentOnly
+        runtimeClasspath {
+            extendsFrom developmentOnly
+        }
+    }
+
+    dependencies {
+        implementation(
+                "${boot}:spring-boot-starter",
+
+        )
+        compileOnly(
+                lombok,
+
+        )
+        annotationProcessor(
+                lombok,
+
+        )
+        testImplementation(
+                "${boot}:spring-boot-starter-test",
+
+        )
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+
+    ["api"].each {
+        def subProjectDir = new File(rootDir, it)
+        subProjectDir.eachDir { dir ->
+            def projectName = ":${it}-${dir.name}"
+            project(projectName) {
+                bootJar.enabled(true)
+                jar.enabled(true)
+            }
+        }
+    }
+
+    ["domain"].each {
+        def subProjectDir = new File(rootDir, it)
+        subProjectDir.eachDir {dir->
+            def projectName = ":${it}-${dir.name}"
+            project(projectName){
+                bootJar.enabled(false)
+                jar.enabled(true)
+            }
+        }
+    }
+
+    help.enabled(false)
 }
