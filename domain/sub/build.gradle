@@ -3,7 +3,6 @@
 dependencies {
     implementation(
             project(':domain-main'),
-            project(':domain-sub'),
     )
 }
 
