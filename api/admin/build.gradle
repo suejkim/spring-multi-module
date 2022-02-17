@@ -3,7 +3,7 @@
 dependencies {
     implementation(
             project(':domain-main'),
-            project(':domain-sub'),
+            project(':domain-sub'), // 추가하니 Cat이 Bean 등록됨
     )
 }
 

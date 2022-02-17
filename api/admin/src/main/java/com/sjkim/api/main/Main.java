@@ -13,7 +13,7 @@ public class Main {
 
     public boolean execute() {
         animalService.actAnimal(animal);
-        animalService.getAnimalName(animal);
+        System.out.println(animalService.getAnimalName(animal));
         return true;
     }
 }
