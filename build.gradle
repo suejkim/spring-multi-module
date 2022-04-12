@@ -46,6 +46,7 @@ subprojects {
     dependencies {
         implementation(
                 "${boot}:spring-boot-starter",
+                "${boot}:spring-boot-starter-web",
 
         )
         compileOnly(
